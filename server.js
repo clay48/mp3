@@ -12,14 +12,15 @@ var app = express();
 // Use environment defined port or 3000
 var port = process.env.PORT || 3000;
 
-// Connect to a MongoDB --> Uncomment this once you have a connection string!!
-//mongoose.connect(process.env.MONGODB_URI).catch(function (err) { console.error('MongoDB connection error:', err.message); });
+// Connect to a MongoDB
+mongoose.connect(process.env.MONGODB_URI).catch(function (err) { console.error('MongoDB connection error:', err.message); });
 
 // Allow CORS so that backend and frontend could be put on different servers
 var allowCrossDomain = function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
     next();
 };
 app.use(allowCrossDomain);
@@ -27,6 +28,10 @@ app.use(allowCrossDomain);
 // Parse URL-encoded and JSON request bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(function (req, res, next) {
+    if (!req.body) req.body = {};
+    next();
+});
 
 // Use routes as a module (see index.js)
 require('./routes')(app, router);
