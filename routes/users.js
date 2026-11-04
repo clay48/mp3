@@ -91,7 +91,7 @@ module.exports = function (router) {
         if (!user) throw utils.notFound('User not found.');
         await User.deleteOne({ _id: user._id });
         await Task.updateMany({ assignedUser: user._id.toString() }, { assignedUser: '', assignedUserName: 'unassigned' });
-        res.status(200).json({ message: 'User deleted', data: user });
+        res.status(204).end();
     });
 
     return router;

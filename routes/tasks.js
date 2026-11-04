@@ -88,7 +88,7 @@ module.exports = function (router) {
         if (!task) throw utils.notFound('Task not found.');
         await Task.deleteOne({ _id: task._id });
         await User.updateMany({ pendingTasks: task._id.toString() }, { $pull: { pendingTasks: task._id.toString() } });
-        res.status(200).json({ message: 'Task deleted', data: task });
+        res.status(204).end();
     });
 
     return router;
